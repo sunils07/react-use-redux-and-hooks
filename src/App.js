@@ -1,25 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import React, { useReducer, useMemo } from 'react';
 
-function App() {
+import { handleGetAppSettingsAction } from "./lib/redux/modules/app/app.actions";
+import appReducer, { appDefaultState } from "./lib/redux/modules/app/app.reducer";
+
+import RootDispatchContext from "./hooks/contexts/app/root-dispatch.ctx";
+import RootStateContext from "./hooks/contexts/app/root-state.ctx";
+
+import Header from "./Components/Header/Header.Index";
+import MathComp from "./Components/Math/Math.Index";
+
+
+function App(props) {
+	const [state, dispatch] = useReducer(appReducer, appDefaultState);
+
+	useMemo(() => {
+	  handleGetAppSettingsAction(dispatch);
+	}, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  	<RootDispatchContext.Provider value={dispatch}>
+  		<RootStateContext.Provider value={state}>
+  			<Header />
+    		<MathComp />
+		</RootStateContext.Provider>
+    </RootDispatchContext.Provider>
   );
 }
 
